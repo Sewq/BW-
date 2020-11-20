@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {headPrefixes, headSufixes, headMainPart} from './Items'
+import {headPrefixes, headSufixes, headMainPart} from './items/head'
+import {ringMain, ringPostfixes, ringPrefixes} from './items/Rings'
+import {neckMainBase, neckPrefixes, neckSufixes} from './items/Neck'
+import {jewelerySets} from "./items/JewelerySet";
+import {legSufixes, legMainBase, legPrefixes} from "./items/Legs";
+import {armorsMainBase, armorsPrefixes, armorsSufixes} from "./items/Armor";
+import {armorSets} from "./items/ArmorSet";
 
 function Stat() {
 
@@ -23,6 +29,7 @@ function Stat() {
 
     const [finalDex, setFinalDex] = useState(0);
     const [finalSpost, setFinalSpost] = useState(0);
+    const [finalStr, setFinalStr] = useState(0);
     const [beheMultiplier, setBeheMultiplier] = useState(0);
     const [dexFromTalisman, setDexFromTalisman] = useState(0);
     const [spostFromTalisman, setSpostFromTalisman] = useState(0);
@@ -40,16 +47,34 @@ function Stat() {
 
     const [firstWeapon, setFirstWeapon] = useState({hpMod: 0, luck: 0});
     const [secondWeapon, setSecondWeapon] = useState({luck: 0, hpMod: 0});
-    const [firstRing, setfirstRing] = useState({luck: 0, hpMod: 0});
-    const [secondRing, setSecondRing] = useState({luck: 0, hpMod: 0});
+
+
+    const [firstRingPref, setfirstRingPref] = useState({luck: 0, hpMod: 0});
+    const [firstRingMain, setFirstRingMain] = useState({luck: 0, hpMod: 0});
+    const [firstRingSuf, setFirstRingSuf] = useState({luck: 0, hpMod: 0});
+
+    const [secondRingPref, setSecondRingPref] = useState({luck: 0, hpMod: 0});
+    const [secondRingMain, setSecondRingMain] = useState({luck: 0, hpMod: 0});
+    const [secondRingSuf, setSecondRingSuf] = useState({luck: 0, hpMod: 0});
+
+    const [neckPref, setNeckPref] = useState({luck: 0, hpMod: 0});
+    const [neckMain, setNeckMain] = useState({luck: 0, hpMod: 0});
+    const [neckSuf, setNeckSuf] = useState({luck: 0, hpMod: 0});
+
 
     const [headPref, setHeadPref] = useState({luck: 0, hpMod: 0, spost: 0, dex: 0});
     const [headSuf, setHeadSuf] = useState({luck: 0, hpMod: 0, spost: 0, dex: 0});
     const [headMain, setHeadMain] = useState({luck: 0, hpMod: 0, spost: 0, dex: 0});
 
 
-    const [chest, setChest] = useState({luck: 0, hpMod: 0});
-    const [legs, setLegs] = useState({luck: 0, hpMod: 0});
+    const [armorPref, setArmorPref] = useState({luck: 0, hpMod: 0});
+    const [armorMain, setArmorMain] = useState({luck: 0, hpMod: 0});
+    const [armorSuf, setArmorSuf] = useState({luck: 0, hpMod: 0});
+
+
+    const [legsPref, setLegsPref] = useState({luck: 0, hpMod: 0});
+    const [legsMain, setLegsMainBase] = useState({luck: 0, hpMod: 0});
+    const [legsSuf, setLegsSuf] = useState({luck: 0, hpMod: 0});
 
     const handleFocus = (event) => event.target.select();
 
@@ -64,39 +89,176 @@ function Stat() {
     const sumaHit = suma - (3 * (parseInt(playerDex) + parseInt(playerSpost)));
 
 
-    const dexFromBehe = (parseInt(str) * beheMultiplier);
-    const spostFromBehe = (parseInt(int) + parseInt(wis)) * beheMultiplier;
-
-
     const setTalismanDex = (talismanLevel) => setDexFromTalisman(15 * talismanLevel);
 
     const setTalismanSpost = (spostFromTalisman) => setSpostFromTalisman(spostFromTalisman);
 
     const onChange = selectedOption => setFirstWeapon(JSON.parse(selectedOption.target.value));
+
     const onHeadPrefChange = selectedOption => setHeadPref(JSON.parse(selectedOption.target.value));
     const onHeadMainChange = selectedOption => setHeadMain(JSON.parse(selectedOption.target.value));
     const onHeadSufChange = selectedOption => setHeadSuf(JSON.parse(selectedOption.target.value));
+
+    const onArmorPrefChange = selectedOption => setArmorPref(JSON.parse(selectedOption.target.value));
+    const onArmorMainChange = selectedOption => setArmorMain(JSON.parse(selectedOption.target.value));
+    const onArmorSufChange = selectedOption => setArmorSuf(JSON.parse(selectedOption.target.value));
+
+    const onFirstRingPrefChange = selectedOption => setfirstRingPref(JSON.parse(selectedOption.target.value));
+    const onFirstRingMainChange = selectedOption => setFirstRingMain(JSON.parse(selectedOption.target.value));
+    const onFirstRingSufChange = selectedOption => setFirstRingSuf(JSON.parse(selectedOption.target.value));
+
+    const onSecondRingPrefChange = selectedOption => setSecondRingPref(JSON.parse(selectedOption.target.value));
+    const onSecondRingMainChange = selectedOption => setSecondRingMain(JSON.parse(selectedOption.target.value));
+    const onSecondRingSufChange = selectedOption => setSecondRingSuf(JSON.parse(selectedOption.target.value));
+
+    const onNeckPrefChange = selectedOption => setNeckPref(JSON.parse(selectedOption.target.value));
+    const onNeckMainBaseChange = selectedOption => setNeckMain(JSON.parse(selectedOption.target.value));
+    const onNeckSufChange = selectedOption => setNeckSuf(JSON.parse(selectedOption.target.value));
+
+    const onLegsPrefChange = selectedOption => setLegsPref(JSON.parse(selectedOption.target.value));
+    const onLegsMainBaseChange = selectedOption => setLegsMainBase(JSON.parse(selectedOption.target.value));
+    const onLegsSufChange = selectedOption => setLegsSuf(JSON.parse(selectedOption.target.value));
+
+    const numberOrZero = value => parseFloat(value) || 0;
+
+    const dexFromHead = () => numberOrZero(headMain.dex) + numberOrZero(headPref.dex) + numberOrZero(headSuf.dex);
+    const spostFromHead = () => numberOrZero(headMain.spost) + numberOrZero(headPref.spost) + numberOrZero(headSuf.spost);
+    const strFromHead = () => numberOrZero(headMain.str) + numberOrZero(headPref.str) + numberOrZero(headSuf.str);
+    const intFromHead = () => numberOrZero(headMain.int) + numberOrZero(headPref.int) + numberOrZero(headSuf.int);
+    const wplFromHead = () => numberOrZero(headMain.wpl) + numberOrZero(headPref.wpl) + numberOrZero(headSuf.wpl);
+    const lookFromHead = () => numberOrZero(headMain.look) + numberOrZero(headPref.look) + numberOrZero(headSuf.look);
+    const luckFromHead = () => numberOrZero(headMain.luck) + numberOrZero(headPref.luck) + numberOrZero(headSuf.luck);
+
+    const dexFromFirstRing = () => numberOrZero(firstRingPref.dex) + numberOrZero(firstRingMain.dex) + numberOrZero(firstRingSuf.dex);
+    const spostFromFirstRing = () => numberOrZero(firstRingPref.spost) + numberOrZero(firstRingMain.spost) + numberOrZero(firstRingSuf.spost);
+    const strFromFirstRing = () => numberOrZero(firstRingPref.str) + numberOrZero(firstRingMain.str) + numberOrZero(firstRingSuf.str);
+    const intFromFirstRing = () => numberOrZero(firstRingPref.int) + numberOrZero(firstRingMain.int) + numberOrZero(firstRingSuf.int);
+    const wplFromFirstRing = () => numberOrZero(firstRingPref.wpl) + numberOrZero(firstRingMain.wpl) + numberOrZero(firstRingSuf.wpl);
+    const lookFromFirstRing = () => numberOrZero(firstRingPref.look) + numberOrZero(firstRingMain.look) + numberOrZero(firstRingSuf.look);
+    const luckFromFirstRing = () => numberOrZero(firstRingPref.luck) + numberOrZero(firstRingMain.luck) + numberOrZero(firstRingSuf.luck);
+    const hpModFromFirstRing = () => numberOrZero(firstRingPref.hpMod) + numberOrZero(firstRingMain.hpMod) + numberOrZero(firstRingSuf.hpMod);
+
+    const dexFromSecondRing = () => numberOrZero(secondRingPref.dex) + numberOrZero(secondRingMain.dex) + numberOrZero(secondRingSuf.dex);
+    const spostFromSecondRing = () => numberOrZero(secondRingPref.spost) + numberOrZero(secondRingMain.spost) + numberOrZero(secondRingSuf.spost);
+    const strFromSecondRing = () => numberOrZero(secondRingPref.str) + numberOrZero(secondRingMain.str) + numberOrZero(secondRingSuf.str);
+    const intFromSecondRing = () => numberOrZero(secondRingPref.int) + numberOrZero(secondRingMain.int) + numberOrZero(secondRingSuf.int);
+    const wplFromSecondRing = () => numberOrZero(secondRingPref.wpl) + numberOrZero(secondRingMain.wpl) + numberOrZero(secondRingSuf.wpl);
+    const lookFromSecondRing = () => numberOrZero(secondRingPref.look) + numberOrZero(secondRingMain.look) + numberOrZero(secondRingSuf.look);
+    const luckFromSecondRing = () => numberOrZero(secondRingPref.luck) + numberOrZero(secondRingMain.luck) + numberOrZero(secondRingSuf.luck);
+    const hpModFromSecondRing = () => numberOrZero(secondRingPref.hpMod) + numberOrZero(secondRingMain.hpMod) + numberOrZero(secondRingSuf.hpMod);
+
+    const dexFromNeck = () => numberOrZero(neckPref.dex) + numberOrZero(neckMain.dex) + numberOrZero(neckSuf.dex);
+    const spostFromNeck = () => numberOrZero(neckPref.spost) + numberOrZero(neckMain.spost) + numberOrZero(neckSuf.spost);
+    const strFromNeck = () => numberOrZero(neckPref.str) + numberOrZero(neckMain.str) + numberOrZero(neckSuf.str);
+    const intFromNeck = () => numberOrZero(neckPref.int) + numberOrZero(neckMain.int) + numberOrZero(neckSuf.int);
+    const wplFromNeck = () => numberOrZero(neckPref.wpl) + numberOrZero(neckMain.wpl) + numberOrZero(neckSuf.wpl);
+    const lookFromNeck = () => numberOrZero(neckSuf.look) + numberOrZero(neckMain.look) + numberOrZero(neckSuf.look);
+    const luckFromNeck = () => numberOrZero(neckSuf.luck) + numberOrZero(neckMain.luck) + numberOrZero(neckSuf.luck);
+    const hpModFromNeck = () => numberOrZero(neckSuf.hpMod) + numberOrZero(neckMain.hpMod) + numberOrZero(neckSuf.hpMod);
+
+
+    const dexFromLegs = () => numberOrZero(legsPref.dex) + numberOrZero(legsMain.dex) + numberOrZero(legsSuf.dex);
+    const spostFromLegs = () => numberOrZero(legsPref.spost) + numberOrZero(legsMain.spost) + numberOrZero(legsSuf.spost);
+    const strFromLegs = () => numberOrZero(legsPref.str) + numberOrZero(legsMain.str) + numberOrZero(legsSuf.str);
+    const intFromLegs = () => numberOrZero(legsPref.int) + numberOrZero(legsMain.int) + numberOrZero(legsSuf.int);
+    const wplFromLegs = () => numberOrZero(legsPref.wpl) + numberOrZero(legsMain.wpl) + numberOrZero(legsSuf.wpl);
+    const lookFromLegs = () => numberOrZero(legsPref.look) + numberOrZero(legsMain.look) + numberOrZero(legsSuf.look);
+    const luckFromLegs = () => numberOrZero(legsPref.luck) + numberOrZero(legsMain.luck) + numberOrZero(legsSuf.luck);
+
+
+    const dexFromArmor = () => numberOrZero(armorPref.dex) + numberOrZero(armorMain.dex) + numberOrZero(armorSuf.dex);
+    const spostFromArmor = () => numberOrZero(armorPref.spost) + numberOrZero(armorMain.spost) + numberOrZero(armorSuf.spost);
+    const strFromArmor = () => numberOrZero(armorPref.str) + numberOrZero(armorMain.str) + numberOrZero(armorSuf.str);
+    const intFromArmor = () => numberOrZero(armorPref.int) + numberOrZero(armorMain.int) + numberOrZero(armorSuf.int);
+    const wplFromArmor = () => numberOrZero(armorPref.wpl) + numberOrZero(armorMain.wpl) + numberOrZero(armorSuf.wpl);
+    const lookFromArmor = () => numberOrZero(armorPref.look) + numberOrZero(armorMain.look) + numberOrZero(armorSuf.look);
+    const luckFromArmor = () => numberOrZero(armorPref.luck) + numberOrZero(armorMain.luck) + numberOrZero(armorSuf.luck);
+    const hpModFromArmor = () => numberOrZero(armorPref.hpMod) + numberOrZero(armorMain.hpMod) + numberOrZero(armorSuf.hpMod);
+
+
+    const jewelerySetBonusStr = () => {
+        if (neckPref.id && neckPref.id === firstRingPref.id && neckPref.id === secondRingPref.id) {
+            return numberOrZero(jewelerySets[neckPref.id].str);
+        }
+        return 0;
+    };
+
+    const jewelerySetBonusHpMod = () => {
+        if (neckPref.id && neckPref.id === firstRingPref.id && neckPref.id === secondRingPref.id) {
+            return numberOrZero(jewelerySets[neckPref.id].hpMod);
+        }
+        return 0;
+    };
+
+    const jewelerySetBonusSpost = () => {
+        if (neckPref.id && neckPref.id === firstRingPref.id && neckPref.id === secondRingPref.id) {
+            return numberOrZero(jewelerySets[neckPref.id].spost);
+        }
+        return 0;
+    };
+
+    const armorSetBonusStr = () => {
+        if (legsPref.id && legsPref.id === headPref.id && legsPref.id === armorPref.id) {
+            return numberOrZero(armorSets[legsPref.id].str);
+        }
+        return 0;
+    };
+
+    const armorSetBonusLuck = () => {
+        if (legsPref.id && legsPref.id === headPref.id && legsPref.id === armorPref.id) {
+            return numberOrZero(armorSets[legsPref.id].luck);
+        }
+        return 0;
+    };
+
+    const hpWithMod = (hp, mod) => numberOrZero(hp) * mod;
+
+    const finalStrength = () => numberOrZero(str) + strFromHead() + strFromFirstRing() + strFromSecondRing() + strFromNeck() + strFromLegs() + strFromArmor() + jewelerySetBonusStr() + armorSetBonusStr();
+    const finalInt = () => numberOrZero(int) + intFromHead() + intFromFirstRing() + intFromSecondRing() + intFromNeck() + intFromArmor() + intFromLegs();
+    const finalWpl = () => numberOrZero(wis) + wplFromHead() + wplFromFirstRing() + wplFromSecondRing() + wplFromNeck() + wplFromArmor() + wplFromLegs();
+    const finalLook = () => numberOrZero(look) + lookFromHead() + lookFromFirstRing() + lookFromSecondRing() + lookFromNeck() + lookFromLegs() + lookFromArmor();
+    const finalLuck = () => numberOrZero(luck) + race.luck + armorSetBonusLuck() + luckFromArmor() + luckFromFirstRing() + luckFromSecondRing() + luckFromHead() + luckFromLegs() + luckFromNeck();
+    const finalHp = () => Math.ceil(parseInt(baseHp) + (parseInt(baseHp) * race.hpMod) + hpWithMod(baseHp, hpModFromFirstRing()) + hpWithMod(baseHp, hpModFromSecondRing()) + hpWithMod(baseHp, hpModFromNeck()) + hpWithMod(baseHp, hpModFromArmor()) + hpWithMod(baseHp, jewelerySetBonusHpMod()));
+
+    const dexFromBehe = (parseInt(finalStrength()) * beheMultiplier);
+    const spostFromBehe = (parseInt(int) + parseInt(wis)) * beheMultiplier;
 
 
     return (
         <>
             <p>
-
                 final
-                dex: {(parseInt(playerDex) || 0) + (parseInt(dexFromBehe) || 0) + (parseInt(dexFromTalisman) || 0) + (parseInt(headMain.dex) || 0) + (parseInt(headPref.dex) || 0) + (parseInt(headSuf.dex) || 0)}
-
+                dex bez
+                evo: {numberOrZero(playerDex) + numberOrZero(dexFromBehe) + numberOrZero(dexFromTalisman) + dexFromHead() + dexFromFirstRing() + dexFromSecondRing() + dexFromNeck() + dexFromLegs() + dexFromArmor()}
+            </p>
+            <p>
+                final
+                spost bez
+                evo: {parseInt(playerSpost) + parseInt(spostFromBehe) + parseInt(spostFromTalisman) + spostFromHead() + spostFromFirstRing() + spostFromSecondRing() + spostFromNeck() + spostFromLegs() + spostFromArmor() + jewelerySetBonusSpost()}
+            </p>
+            <p>
+                final
+                sila bez evo: {finalStrength()}
+            </p>
+            <p>
+                final
+                int bez evo: {finalInt()}
+            </p>
+            <p>
+                final
+                wplywy bez evo: {finalWpl()}
+            </p>
+            <p>
+                final
+                wyglad bez evo: {finalLook()}
             </p>
             <p>
 
-                final spost: {parseInt(playerSpost) + parseInt(spostFromBehe) + parseInt(spostFromTalisman)}
+                final hp: {finalHp()}
             </p>
             <p>
 
-                final hp: {Math.ceil(parseInt(baseHp) + (parseInt(baseHp) * race.hpMod) + (parseInt(baseHp) * firstWeapon.hpMod))}
-            </p>
-            <p>
-
-                final luck: {parseInt(luck) + race.luck}
+                final luck bez evo: {finalLuck()}
             </p>
             <div>
                 Moj level:
@@ -296,85 +458,56 @@ function Stat() {
             <p>
                 <div>
                     <label style={{paddingRight: 20}} htmlFor="pref">Palec 1:</label>
-                    <select id="pref">
-                        <option value={{}} onChange={() => {
-                        }}>Tanczacy
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Msciwy
-                        </option>
+                    <select id="pref" onChange={onFirstRingPrefChange}>
+                        {ringPrefixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="base">
-                        <option value={{}} onChange={() => {
-                        }}>Krawat
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Naszyjnik
-                        </option>
+                    <select id="base" onChange={onFirstRingMainChange}>
+                        {ringMain.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="suf">
-                        <option value={{}} onChange={() => {
-                        }}>gowna
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>dupy
-                        </option>
+                    <select id="suf" onChange={onFirstRingSufChange}>
+                        {ringPostfixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-
                 </div>
                 <div>
                     <label style={{paddingRight: 20}} htmlFor="pref">Palec 2:</label>
-                    <select id="q">
-                        <option value={{}} onChange={() => {
-                        }}>Tanczacy
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Msciwy
-                        </option>
+                    <select id="pref" onChange={onSecondRingPrefChange}>
+                        {ringPrefixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="w">
-                        <option value={{}} onChange={() => {
-                        }}>Krawat
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Naszyjnik
-                        </option>
+                    <select id="base" onChange={onSecondRingMainChange}>
+                        {ringMain.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="e">
-                        <option value={{}} onChange={() => {
-                        }}>gowna
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>dupy
-                        </option>
+                    <select id="suf" onChange={onSecondRingSufChange}>
+                        {ringPostfixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-
                 </div>
                 <div>
                     <label style={{paddingRight: 20}} htmlFor="pref">Szyja:</label>
-                    <select id="r">
-                        <option value={{}} onChange={() => {
-                        }}>Tanczacy
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Msciwy
-                        </option>
+                    <select id="pref" onChange={onNeckPrefChange}>
+                        {neckPrefixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="t">
-                        <option value={{}} onChange={() => {
-                        }}>Krawat
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Naszyjnik
-                        </option>
+                    <select id="base" onChange={onNeckMainBaseChange}>
+                        {neckMainBase.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="y">
-                        <option value={{}} onChange={() => {
-                        }}>gowna
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>dupy
-                        </option>
+                    <select id="suf" onChange={onNeckSufChange}>
+                        {neckSufixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
 
                 </div>
@@ -431,7 +564,6 @@ function Stat() {
                 </div>
                 <div>
                     <label style={{paddingRight: 20}} htmlFor="pref">Glowa:</label>
-
                     <select id="headSuf" onChange={onHeadPrefChange}>
                         {headPrefixes.map((option) => (
                             <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
@@ -451,56 +583,39 @@ function Stat() {
                 </div>
                 <div>
                     <label style={{paddingRight: 20}} htmlFor="pref">Klata:</label>
-                    <select id="j">
-                        <option value={{}} onChange={() => {
-                        }}>Tanczacy
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Msciwy
-                        </option>
+                    <select id="headSuf" onChange={onArmorPrefChange}>
+                        {armorsPrefixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="k">
-                        <option value={{}} onChange={() => {
-                        }}>Krawat
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Naszyjnik
-                        </option>
+                    <select id="headMain" onChange={onArmorMainChange}>
+                        {armorsMainBase.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="l">
-                        <option value={{}} onChange={() => {
-                        }}>gowna
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>dupy
-                        </option>
+                    <select id="headSuf" onChange={onArmorSufChange}>
+                        {armorsSufixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
+
                     </select>
                 </div>
                 <div>
                     <label style={{paddingRight: 20}} htmlFor="pref">Nogi:</label>
-                    <select id="z">
-                        <option value={{}} onChange={() => {
-                        }}>Tanczacy
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Msciwy
-                        </option>
+                    <select id="headSuf" onChange={onLegsPrefChange}>
+                        {legPrefixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="x">
-                        <option value={{}} onChange={() => {
-                        }}>Krawat
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>Naszyjnik
-                        </option>
+                    <select id="headMain" onChange={onLegsMainBaseChange}>
+                        {legMainBase.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
-                    <select id="c">
-                        <option value={{}} onChange={() => {
-                        }}>gowna
-                        </option>
-                        <option value={{}} onChange={() => {
-                        }}>dupy
-                        </option>
+                    <select id="headSuf" onChange={onLegsSufChange}>
+                        {legSufixes.map((option) => (
+                            <option key={option.name} value={JSON.stringify(option)}>{option.name}</option>
+                        ))}
                     </select>
                 </div>
             </p>
